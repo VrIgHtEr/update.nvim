@@ -3,7 +3,9 @@ local env = require 'toolshed.env'
 local a = require 'toolshed.async'
 local git = require 'toolshed.git'
 local dirname = 'neovim'
-local marker = env.get_dependency_path(dirname) .. '/update.nvim'
+local path = env.get_dependency_path(dirname)
+local buildpath = path .. '/build'
+local marker = path .. '/update.nvim'
 
 local build_commands = {
     { 'make', 'CMAKE_BUILD_TYPE=Release', 'CMAKE_EXTRA_FLAGS=-DCMAKE_INSTALL_PREFIX=' .. env.root },
@@ -12,7 +14,7 @@ local build_commands = {
 }
 
 for _, x in ipairs(build_commands) do
-    x.cwd = env.get_dependency_path(dirname)
+    x.cwd = path
 end
 
 function M.setup()
@@ -39,13 +41,13 @@ local function rebuild()
             end)
             return false
         end
-        return true
     end
+    return true
 end
 
 function M.update()
     return a.run(function()
-        local updates = assert(a.wait(git.update_async(env.get_dependency_path(dirname))))
+        local updates = assert(a.wait(git.update_async(path)))
         if #updates ~= 0 then
             env.deleteFileOrDir(marker)
         end
