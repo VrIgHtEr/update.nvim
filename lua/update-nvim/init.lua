@@ -17,6 +17,20 @@ for _, x in ipairs(build_commands) do
     x.cwd = path
 end
 
+local function notify(message, msgtype)
+    if message == nil then
+        message = ''
+    else
+        message = tostring(message)
+    end
+    if not msgtype or type(msgtype) ~= 'string' then
+        msgtype = 'info'
+    end
+    vim.schedule(function()
+        vim.notify(message, msgtype, { title = 'update.nvim' })
+    end)
+end
+
 function M.setup()
     a.run(function()
         a.spawn_a { 'ln', '-s', env.bin .. '/nvim', vim.fn.fnamemodify('~', ':p') .. '/.local/bin/nvim' }
@@ -33,33 +47,26 @@ end
 
 local function rebuild()
     for _, x in ipairs(build_commands) do
-        vim.schedule(function()
-            vim.notify('Executing command:\n' .. vim.inspect(x), 'info', { title = 'update.nvim' })
-        end)
+        notify('Executing command:\n' .. table.concat(x, ' '))
         local ret = a.spawn_lines_a(x, print)
         if ret ~= 0 then
-            vim.schedule(function()
-                vim.notify('An error occurred while executing command\n' .. vim.inspect(x), 'error', { title = 'update.nvim' })
-            end)
+            notify('An error occurred while executing command\n' .. table.concat(x, ' '), 'error')
             return false
         end
     end
-    vim.schedule(function()
-        vim.notify('Neovim was updated successfully.\n\nPlease restart', 'info', { title = 'update.nvim' })
-    end)
+    notify 'Neovim was updated successfully.\n\nPlease restart'
     return true
 end
 
 function M.update()
     return a.run(function()
+        notify 'Checking for updates'
         local updates = assert(a.wait(git.update_async(path)))
         if #updates ~= 0 then
             env.deleteFileOrDir(marker)
         end
         if env.file_exists(marker) then
-            vim.schedule(function()
-                vim.notify('Neovim is already up to date', 'info', { title = 'update.nvim' })
-            end)
+            notify 'Neovim is already up to date!'
             return false
         end
         return rebuild()
