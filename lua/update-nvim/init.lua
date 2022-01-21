@@ -11,6 +11,10 @@ local build_commands = {
     { 'touch', marker },
 }
 
+for _, x in ipairs(build_commands) do
+    x.cwd = env.get_dependency_meta_path(dirname)
+end
+
 function M.setup()
     a.run(function()
         a.spawn_a { 'ln', '-s', env.bin .. '/nvim', vim.fn.fnamemodify('~', ':p') .. '/.local/bin/nvim' }
