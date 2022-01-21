@@ -14,7 +14,6 @@ function M.setup()
                 buildcmd = {
                     { 'make', 'CMAKE_BUILD_TYPE=Release', 'CMAKE_EXTRA_FLAGS=-DCMAKE_INSTALL_PREFIX=' .. env.root },
                     { 'make', 'install' },
-                    { 'rm', '-rf', 'build/' },
                 },
             },
         }
