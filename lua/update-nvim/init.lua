@@ -41,7 +41,7 @@ end
 
 function M.update()
     return a.run(function()
-        local updates = assert(git.update_a(env.get_dependency_path(dirname)))
+        local updates = assert(a.wait(git.update_async(env.get_dependency_path(dirname))))
         if #updates ~= 0 then
             env.deleteFileOrDir(marker)
         end
