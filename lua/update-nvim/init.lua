@@ -12,7 +12,7 @@ local build_commands = {
 }
 
 for _, x in ipairs(build_commands) do
-    x.cwd = env.get_dependency_meta_path(dirname)
+    x.cwd = env.get_dependency_path(dirname)
 end
 
 function M.setup()
