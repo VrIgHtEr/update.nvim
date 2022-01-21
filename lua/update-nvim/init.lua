@@ -33,7 +33,9 @@ end
 
 local function rebuild()
     for _, x in ipairs(build_commands) do
-        vim.notify('Executing command:\n' .. vim.inspect(x), 'info', { title = 'update.nvim' })
+        vim.schedule(function()
+            vim.notify('Executing command:\n' .. vim.inspect(x), 'info', { title = 'update.nvim' })
+        end)
         local ret = a.spawn_lines_a(x, print)
         if ret ~= 0 then
             vim.schedule(function()
@@ -42,6 +44,9 @@ local function rebuild()
             return false
         end
     end
+    vim.schedule(function()
+        vim.notify('Neovim was updated successfully.\n\nPlease restart', 'info', { title = 'update.nvim' })
+    end)
     return true
 end
 
@@ -52,6 +57,9 @@ function M.update()
             env.deleteFileOrDir(marker)
         end
         if env.file_exists(marker) then
+            vim.schedule(function()
+                vim.notify('Neovim is already up to date', 'info', { title = 'update.nvim' })
+            end)
             return false
         end
         return rebuild()
