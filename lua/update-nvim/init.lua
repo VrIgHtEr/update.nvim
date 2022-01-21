@@ -28,7 +28,7 @@ end
 local function rebuild()
     for _, x in ipairs(build_commands) do
         vim.notify('Executing command:\n' .. vim.inspect(x), 'info', { title = 'update.nvim' })
-        local ret = a.spawn_lines_a({}, print)
+        local ret = a.spawn_lines_a(x, print)
         if ret ~= 0 then
             vim.schedule(function()
                 vim.notify('An error occurred while executing command\n' .. vim.inspect(x), 'error', { title = 'update.nvim' })
