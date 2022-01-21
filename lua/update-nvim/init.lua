@@ -5,7 +5,7 @@ local git = require 'toolshed.git'
 local dirname = 'neovim'
 local path = env.get_dependency_path(dirname)
 local buildpath = path .. '/build'
-local marker = path .. '/update.nvim'
+local marker = path .. '/.update.nvim'
 
 local build_commands = {
     { 'make', 'CMAKE_BUILD_TYPE=Release', 'CMAKE_EXTRA_FLAGS=-DCMAKE_INSTALL_PREFIX=' .. env.root },
