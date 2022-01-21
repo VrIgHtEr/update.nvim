@@ -4,8 +4,9 @@ local a = require 'toolshed.async'
 local dirname = 'neovim'
 
 function M.setup()
-    return a.run(function()
-        return env.install_dependencies {
+    a.run(function()
+        a.spawn_a { 'ln', '-s', env.bin .. '/nvim', vim.fn.fnamemodify('~', ':p') .. '/.local/bin/nvim' }
+        env.install_dependencies {
             {
                 dirname = dirname,
                 repo = 'https://github.com/neovim/neovim',
@@ -14,6 +15,7 @@ function M.setup()
                     { 'rm', '-rf', 'build/' },
                     { 'make', 'CMAKE_EXTRA_FLAGS=-DCMAKE_INSTALL_PREFIX=' .. env.root },
                     { 'make', 'install' },
+                    { 'rm', '-rf', 'build/' },
                 },
             },
         }
