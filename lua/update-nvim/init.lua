@@ -33,7 +33,7 @@ end
 
 function M.setup()
     a.run(function()
-        a.spawn_a { 'ln', '-s', env.bin .. '/nvim', vim.fn.fnamemodify('~', ':p') .. '/.local/bin/nvim' }
+        a.wait(a.spawn_async { 'ln', '-s', env.bin .. '/nvim', vim.fn.fnamemodify('~', ':p') .. '/.local/bin/nvim' })
         env.install_dependencies {
             {
                 dirname = dirname,
@@ -48,7 +48,7 @@ end
 local function rebuild()
     for _, x in ipairs(build_commands) do
         notify('Executing command:\n' .. table.concat(x, ' '))
-        local ret = a.spawn_lines_a(x, print)
+        local ret = a.wait(a.spawn_lines_async(x, print))
         if ret ~= 0 then
             notify('An error occurred while executing command\n' .. table.concat(x, ' '), 'error')
             return false
